@@ -5,6 +5,7 @@ import 'package:flutter_application_1/insight_page.dart';
 import 'package:flutter_application_1/map_page.dart';
 import 'package:flutter_application_1/settings_page.dart';
 
+
 void main() {
   runApp(const MyApp());
 }
@@ -73,9 +74,9 @@ class _RootPageState extends State<RootPage> {
   final List<Widget> pages = [
     const HomePage(),
     const MapPage(),
-    const AddPage(),
-    const InsightPage(),
-    const SettingsPage(),
+    AddPage(),
+    InsightPage(),
+    SettingsPage(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -88,7 +89,7 @@ class _RootPageState extends State<RootPage> {
 
         unselectedIconTheme: IconThemeData(
           color: Color.fromRGBO(26, 30, 91, 1),
-          
+
         ),
         selectedIconTheme: IconThemeData(
           color: Colors.indigo
@@ -101,7 +102,7 @@ class _RootPageState extends State<RootPage> {
           BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: ''),
         ],
-        
+
         currentIndex: currentPage,
         onTap: (int index){
           setState(() {
