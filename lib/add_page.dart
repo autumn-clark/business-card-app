@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+// import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AddPage extends StatefulWidget {
@@ -8,44 +8,44 @@ class AddPage extends StatefulWidget {
 }
 
 class _AddPageState extends State<AddPage> {
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  QRViewController? qrController;
+  // final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  // QRViewController? qrController;
   String qrResult = "No QR code scanned";
   XFile? image;
 
   @override
   void dispose() {
-    qrController?.dispose();
+    // qrController?.dispose();
     super.dispose();
   }
 
-  void _scanQRCode() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Container(
-          height: 300,
-          padding: EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Expanded(
-                child: QRView(
-                  key: qrKey,
-                  onQRViewCreated: (QRViewController controller) {
-                    setState(() => qrController = controller);
-                    controller.scannedDataStream.listen((scanData) {
-                      setState(() => qrResult = scanData.code ?? "Invalid QR");
-                      Navigator.pop(context);
-                    });
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+  // void _scanQRCode() {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     builder: (context) {
+  //       return Container(
+  //         height: 300,
+  //         padding: EdgeInsets.all(16),
+  //         child: Column(
+  //           children: [
+  //             Expanded(
+  //               child: QRView(
+  //                 key: qrKey,
+  //                 onQRViewCreated: (QRViewController controller) {
+  //                   setState(() => qrController = controller);
+  //                   controller.scannedDataStream.listen((scanData) {
+  //                     setState(() => qrResult = scanData.code ?? "Invalid QR");
+  //                     Navigator.pop(context);
+  //                   });
+  //                 },
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   Future<void> _captureCard() async {
     final picker = ImagePicker();
@@ -70,7 +70,7 @@ class _AddPageState extends State<AddPage> {
               child: ListTile(
                 leading: Icon(Icons.qr_code, color: Colors.teal),
                 title: Text("Scan QR Code"),
-                onTap: _scanQRCode,
+                // onTap: _scanQRCode,
               ),
             ),
 
@@ -80,7 +80,7 @@ class _AddPageState extends State<AddPage> {
               child: ListTile(
                 leading: Icon(Icons.camera_alt, color: Colors.teal),
                 title: Text("Capture Business Card"),
-                onTap: _captureCard,
+                // onTap: _captureCard,
               ),
             ),
 
@@ -106,7 +106,7 @@ class _AddPageState extends State<AddPage> {
 
             SizedBox(height: 16),
 
-            Text("QR Scan Result: $qrResult"),
+            // Text("QR Scan Result: $qrResult"),
           ],
         ),
       ),

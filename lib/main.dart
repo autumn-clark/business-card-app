@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/add_page.dart';
+import 'package:flutter_application_1/colors.dart';
 import 'package:flutter_application_1/home_page.dart';
 import 'package:flutter_application_1/insight_page.dart';
 import 'package:flutter_application_1/map_page.dart';
@@ -34,14 +35,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: customSwatch, // Custom primary color
-        scaffoldBackgroundColor:
-            Color.fromRGBO(239, 239, 239, 1), // Dark mode background
-        textTheme: const TextTheme(
-          bodyLarge:
-              TextStyle(color: Color.fromRGBO(26, 30, 91, 1), fontSize: 18),
+        primarySwatch: customSwatch,
+        scaffoldBackgroundColor: AppColors.background,
+        textTheme: TextTheme(
+          bodyLarge: TextStyle(color: AppColors.textPrimary, fontSize: 18),
           bodyMedium: TextStyle(color: Colors.black, fontSize: 16),
         ),
+
         bottomNavigationBarTheme: BottomNavigationBarThemeData(
           backgroundColor: Colors.white,
           elevation: 0,
@@ -85,31 +85,13 @@ class _RootPageState extends State<RootPage> {
         title: const Text('Home'),
       ),
       body: pages[currentPage],
-      bottomNavigationBar: BottomNavigationBar(
-
-        unselectedIconTheme: IconThemeData(
-          color: Color.fromRGBO(26, 30, 91, 1),
-
-        ),
-        selectedIconTheme: IconThemeData(
-          color: Colors.indigo
-        ),
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.location_on), label: ''),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.add_circle_outline), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: ''),
-        ],
-
-        currentIndex: currentPage,
-        onTap: (int index){
-          setState(() {
-            currentPage = index;
-          });
-        },
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentPage: currentPage,
+        onPageChanged: (index) => setState(() {
+          currentPage = index;
+        }),
       ),
+
       // bottomNavigationBar: NavigationBar(
       //   destinations: const [
       //     NavigationDestination(
@@ -129,6 +111,32 @@ class _RootPageState extends State<RootPage> {
       //   },
       //   selectedIndex: currentPage,
       // ),
+    );
+  }
+}
+
+class CustomBottomNavigationBar extends StatelessWidget {
+  final int currentPage;
+  final Function(int) onPageChanged;
+
+  const CustomBottomNavigationBar({
+    Key? key,
+    required this.currentPage,
+    required this.onPageChanged,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomNavigationBar(
+      currentIndex: currentPage,
+      onTap: onPageChanged,
+      items: const [
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
+        BottomNavigationBarItem(icon: Icon(Icons.location_on), label: ''),
+        BottomNavigationBarItem(icon: Icon(Icons.add_circle_outline), label: ''),
+        BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: ''),
+        BottomNavigationBarItem(icon: Icon(Icons.settings), label: ''),
+      ],
     );
   }
 }

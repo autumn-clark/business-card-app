@@ -4,14 +4,14 @@
   ],
   "cleanCommandsComponents": [
     [
-      "C:\\Users\\arrrr\\AppData\\Local\\Android\\sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+      "C:\\Users\\arrrr\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
       "-C",
       "D:\\projects\\thesis\\flutter_app\\business-card-app\\android\\app\\.cxx\\Debug\\4la5h544\\x86_64",
       "clean"
     ]
   ],
   "buildTargetsCommandComponents": [
-    "C:\\Users\\arrrr\\AppData\\Local\\Android\\sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+    "C:\\Users\\arrrr\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
     "-C",
     "D:\\projects\\thesis\\flutter_app\\business-card-app\\android\\app\\.cxx\\Debug\\4la5h544\\x86_64",
     "{LIST_OF_TARGETS_TO_BUILD}"

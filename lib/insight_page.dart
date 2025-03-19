@@ -33,9 +33,13 @@ class _InsightPageState extends State<InsightPage>
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                Text(title,
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                 SizedBox(height: 8),
-                Text(value.toString(), style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                Text(value.toString(),
+                    style:
+                        TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               ],
             ),
             CircleAvatar(
@@ -51,28 +55,22 @@ class _InsightPageState extends State<InsightPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Dashboard'),
-        actions: [
-          IconButton(icon: Icon(Icons.visibility), onPressed: () {}),
-          IconButton(icon: Icon(Icons.info_outline), onPressed: () {}),
-        ],
-      ),
       body: Column(
         children: [
-          TabBar(
-            controller: _tabController,
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.black,
-            indicator: BoxDecoration(
-              color: Colors.teal,
-              borderRadius: BorderRadius.circular(10),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12,0,0,0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              spacing: 5,
+              children: [
+                ElevatedButton(onPressed: (){},
+                    child: Text("Өнөөдөр")),
+                ElevatedButton(onPressed: (){},
+                    child: Text("Энэ долоо хоног")),
+                ElevatedButton(onPressed: (){},
+                    child: Text("Энэ сар"))
+              ],
             ),
-            tabs: [
-              Tab(text: 'Өнөөдөр'),
-              Tab(text: 'Өнгөрсөн 7 хоног'),
-              Tab(text: 'Өнгөрсөн 1 сар'),
-            ],
           ),
           Expanded(
             child: Padding(
@@ -80,30 +78,39 @@ class _InsightPageState extends State<InsightPage>
               child: ListView(
                 children: [
                   _buildCard('Миний нэрийн хуудсыг үзсэн', 0, Colors.green),
-                  _buildCard('Миний нэрийн хуудсыг хуваалцсан', 0, Colors.green),
+                  _buildCard(
+                      'Миний нэрийн хуудсыг хуваалцсан', 0, Colors.green),
                   _buildCard('Миний нэрийн хуудсыг хадгалсан', 0, Colors.green),
                   _buildCard('Шинээр холбогдсон', 0, Colors.red),
                   SizedBox(height: 16),
-                  Text('Дэлгэрэнгүй', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text('Дэлгэрэнгүй',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   Card(
                     elevation: 2,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Row(
                         children: [
-                          CircleAvatar(radius: 30, backgroundColor: Colors.grey[300]),
+                          CircleAvatar(
+                              radius: 30, backgroundColor: Colors.grey[300]),
                           SizedBox(width: 12),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Ариунаа', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                                Text('Ариунаа',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500)),
                                 Text('Ариунаа таны мэдээллийг харсан байна'),
                               ],
                             ),
                           ),
-                          ElevatedButton(onPressed: () {}, child: Text('Харах')),
+                          ElevatedButton(
+                              onPressed: () {}, child: Text('Харах')),
                         ],
                       ),
                     ),
