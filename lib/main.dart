@@ -1,11 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/add_page.dart';
-import 'package:flutter_application_1/colors.dart';
-import 'package:flutter_application_1/home_page.dart';
-import 'package:flutter_application_1/insight_page.dart';
-import 'package:flutter_application_1/map_page.dart';
-import 'package:flutter_application_1/settings_page.dart';
+import 'package:flutter_application_1/pages/add_page.dart';
+import 'package:flutter_application_1/config/colors.dart';
+import 'package:flutter_application_1/pages/home_page.dart';
+import 'package:flutter_application_1/pages/insight_page.dart';
+import 'package:flutter_application_1/pages/map_page.dart';
+import 'package:flutter_application_1/pages/settings_page.dart';
 
 
 void main() {

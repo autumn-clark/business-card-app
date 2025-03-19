@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/business_card.dart';
-import 'package:flutter_application_1/map_page.dart';
-import 'package:flutter_application_1/map_spinnet.dart';
-import 'package:flutter_application_1/recent_contacts.dart';
+import 'package:flutter_application_1/components/business_card.dart';
+import 'package:flutter_application_1/pages/map_page.dart';
+import 'package:flutter_application_1/components/recent_contacts.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
