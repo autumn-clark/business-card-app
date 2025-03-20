@@ -33,7 +33,7 @@ class DBService {
 //To delete a card
   Future<void> deleteBusinessCard(String cardId) async {
     try {
-      await _db.collection("BusinessCards").doc(cardId).delete();
+      await _db.collection("Card").doc(cardId).delete();
     } catch (e) {
       print("Error deleting business card: $e");
       throw e;
@@ -99,14 +99,14 @@ class DBService {
 
 //-----------------------Contacts-------------------------//
 
-//To create a card
-  Future<String?> createContact(Map<String, dynamic> cardData) async {
+//To create a contact
+  Future<String?> createContact(Map<String, dynamic> contactData) async {
     User? user = _auth.currentUser;
     if (user != null) {
-      cardData["userUid"] = user.uid;
+      contactData["userUid"] = user.uid;
 
       // Create a new document and get its reference
-      DocumentReference docRef = await _db.collection("Card").add(cardData);
+      DocumentReference docRef = await _db.collection("Contacts").add(contactData);
 
       // Return the newly created document ID
       return docRef.id;
@@ -115,23 +115,23 @@ class DBService {
   }
 
 
-//To delete a card
-  Future<void> deleteContact(String cardId) async {
+//To delete a contact
+  Future<void> deleteContact(String contactId) async {
     try {
-      await _db.collection("BusinessCards").doc(cardId).delete();
+      await _db.collection("Contacts").doc(contactId).delete();
     } catch (e) {
       print("Error deleting business card: $e");
       throw e;
     }
   }
-//To get a card by its id
-  Future<Map<String, dynamic>?> getContact(String cardId) async {
+//To get a contact by its id
+  Future<Map<String, dynamic>?> getContact(String contactId) async {
     try {
-      DocumentSnapshot doc = await _db.collection("Card").doc(cardId).get();
+      DocumentSnapshot doc = await _db.collection("Contacts").doc(contactId).get();
       if (doc.exists) {
         return doc.data() as Map<String, dynamic>;
       } else {
-        print("No business card found with ID: $cardId");
+        print("No business card found with ID: $contactId");
         return null;
       }
     } catch (e) {
@@ -139,14 +139,14 @@ class DBService {
       return null;
     }
   }
-//To get all cards of a user
-  Future<List<Map<String, dynamic>>> getAllBusinessCards() async {
+//To get all contact of a user
+  Future<List<Map<String, dynamic>>> getAllContacts() async {
     User? user = _auth.currentUser;
     if (user == null) return [];
 
     try {
       QuerySnapshot snapshot = await _db
-          .collection("Card")
+          .collection("Contacts")
           .where("userUid", isEqualTo: user.uid)
           .get();
 
@@ -154,7 +154,7 @@ class DBService {
           .map((doc) => doc.data() as Map<String, dynamic>)
           .toList();
     } catch (e) {
-      print("Error retrieving business cards: $e");
+      print("Error retrieving contacts: $e");
       return [];
     }
   }
