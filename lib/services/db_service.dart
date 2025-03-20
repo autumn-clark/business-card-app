@@ -1,15 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_application_1/models/card.dart';
 
 class DBService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   //---------------------Card-----------------//
-//To create a card
-  Future<String?> createBusinessCard(Map<String, dynamic> cardData) async {
+  // To create a card
+  Future<String?> createBusinessCard(BusinessCardModel card) async {
     User? user = _auth.currentUser;
     if (user != null) {
-      cardData["userUid"] = user.uid;
+      Map<String, dynamic> cardData = {
+        "userUid": user.uid,
+        "email": card.email,
+        "firstName": card.firstName,
+        "lastName": card.lastName,
+        "company": card.company,
+        "occupation": card.occupation,
+        "addresses": card.addresses,
+        "tels": card.tels,
+        "links": card.links,
+        "seen": card.seen,
+      };
 
       // Create a new document and get its reference
       DocumentReference docRef = await _db.collection("Card").add(cardData);
@@ -20,9 +32,20 @@ class DBService {
     return null; // Return null if user is not authenticated
   }
 
-//To update a card
-  Future<void> updateBusinessCard(String cardId, Map<String, dynamic> updatedData) async {
+  // To update a card
+  Future<void> updateBusinessCard(String cardId, BusinessCardModel updatedCard) async {
     try {
+      Map<String, dynamic> updatedData = {
+        "email": updatedCard.email,
+        "firstName": updatedCard.firstName,
+        "lastName": updatedCard.lastName,
+        "company": updatedCard.company,
+        "occupation": updatedCard.occupation,
+        "addresses": updatedCard.addresses,
+        "tels": updatedCard.tels,
+        "links": updatedCard.links,
+        "seen": updatedCard.seen,
+      };
       await _db.collection("Card").doc(cardId).update(updatedData);
       print("Business card updated successfully!");
     } catch (e) {
@@ -30,21 +53,24 @@ class DBService {
     }
   }
 
-//To delete a card
-  Future<void> deleteBusinessCard(String cardId) async {
-    try {
-      await _db.collection("Card").doc(cardId).delete();
-    } catch (e) {
-      print("Error deleting business card: $e");
-      throw e;
-    }
-  }
-//To get a card by its id
-  Future<Map<String, dynamic>?> getBusinessCard(String cardId) async {
+  // To get a card by its id
+  Future<BusinessCardModel?> getBusinessCard(String cardId) async {
     try {
       DocumentSnapshot doc = await _db.collection("Card").doc(cardId).get();
       if (doc.exists) {
-        return doc.data() as Map<String, dynamic>;
+        var data = doc.data() as Map<String, dynamic>;
+        return BusinessCardModel(
+          uid: doc.id,
+          email: data['email'],
+          firstName: data['firstName'],
+          lastName: data['lastName'],
+          company: data['company'],
+          occupation: data['occupation'],
+          addresses: List<String>.from(data['addresses'] ?? []),
+          tels: List<String>.from(data['tels'] ?? []),
+          links: List<String>.from(data['links'] ?? []),
+          seen: List<Timestamp>.from(data['seen'] ?? []),
+        );
       } else {
         print("No business card found with ID: $cardId");
         return null;
@@ -54,8 +80,9 @@ class DBService {
       return null;
     }
   }
-//To get all cards of a user
-  Future<List<Map<String, dynamic>>> getAllBusinessCards() async {
+
+  // To get all cards of a user
+  Future<List<BusinessCardModel>> getAllBusinessCards() async {
     User? user = _auth.currentUser;
     if (user == null) return [];
 
@@ -66,7 +93,21 @@ class DBService {
           .get();
 
       return snapshot.docs
-          .map((doc) => doc.data() as Map<String, dynamic>)
+          .map((doc) {
+        var data = doc.data() as Map<String, dynamic>;
+        return BusinessCardModel(
+          uid: doc.id,
+          email: data['email'],
+          firstName: data['firstName'],
+          lastName: data['lastName'],
+          company: data['company'],
+          occupation: data['occupation'],
+          addresses: List<String>.from(data['addresses'] ?? []),
+          tels: List<String>.from(data['tels'] ?? []),
+          links: List<String>.from(data['links'] ?? []),
+          seen: List<Timestamp>.from(data['seen'] ?? []),
+        );
+      })
           .toList();
     } catch (e) {
       print("Error retrieving business cards: $e");
@@ -120,7 +161,7 @@ class DBService {
     try {
       await _db.collection("Contacts").doc(contactId).delete();
     } catch (e) {
-      print("Error deleting business card: $e");
+      print("Error deleting contacts: $e");
       throw e;
     }
   }
@@ -131,11 +172,11 @@ class DBService {
       if (doc.exists) {
         return doc.data() as Map<String, dynamic>;
       } else {
-        print("No business card found with ID: $contactId");
+        print("No contacts found with ID: $contactId");
         return null;
       }
     } catch (e) {
-      print("Error retrieving business card: $e");
+      print("Error retrieving contacts: $e");
       return null;
     }
   }

@@ -42,9 +42,9 @@ class _SignInState extends State<SignIn> {
             ElevatedButton(
               onPressed: () async {
                 try {
-                  await FirebaseAuth.instance.signInWithEmailAndPassword(
-                    email: _emailController.text,
-                    password: _passwordController.text,
+                  await auth.signInWithEmail(
+                    _emailController.text,
+                    _passwordController.text,
                   );
                   // Navigate to Home after successful sign-in
                   Navigator.pushAndRemoveUntil(
@@ -52,14 +52,14 @@ class _SignInState extends State<SignIn> {
                     MaterialPageRoute(builder: (context) => Home()),
                         (route) => false,
                   );
-                } catch (e) {
-                  print("Sign-in error: $e");
-                  // Show error message if needed
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text("Failed to sign in. Check credentials.")),
-                  );
-                }
+                } catch (e) {}
+                //   print("Sign-in error: $e");
+                //   // Show error message if needed
+                //   ScaffoldMessenger.of(context).showSnackBar(
+                //     SnackBar(
+                //         content: Text("Failed to sign in. Check credentials.")),
+                //   );
+                // }
               },
               child: Text("Нэвтрэх"),
             ),

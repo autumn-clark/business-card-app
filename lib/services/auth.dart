@@ -11,9 +11,14 @@ class AuthService {
         email: email.trim(),
         password: password.trim(),
       );
-      print('User signed in: ${userCredential.user?.email}');
-    } catch (e) {
-        print('Sign-in error: ${e.toString()}');
+      print(userCredential);
+    } on FirebaseAuthException  catch (e) {
+        if(e.code == "user-not-found"){
+          print("aaaA $e.code");
+          registerUser(email, password);
+        } else if(e.code == "wrong-password"){
+          print(e.code);
+        }
       }
     }
 
@@ -25,6 +30,7 @@ class AuthService {
         password: password.trim(),
       );
       print('User registered: ${userCredential.user?.email}');
+      signInWithEmail(email, password);
     } on FirebaseAuthException catch (e) {
       print('Registration error: ${e.message}');
     }

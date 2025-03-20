@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/business_card.dart';
+import 'package:flutter_application_1/models/card.dart';
 import 'package:flutter_application_1/pages/map_page.dart';
 import 'package:flutter_application_1/components/recent_contacts.dart';
 import 'package:flutter_application_1/services/db_service.dart';
@@ -10,8 +11,10 @@ class HomePage extends StatelessWidget {
 
   User? user = FirebaseAuth.instance.currentUser;
   final dbService = DBService();
-  fetchUser () async {
-    if(user != null ) {
+  List<BusinessCardModel> businessCards = [];
+
+  fetchUser() async {
+    if (user != null) {
       print(user);
       // await dbService.createUserDocument({
       //   "firstName": "John",
@@ -35,6 +38,7 @@ class HomePage extends StatelessWidget {
       print("User not found");
     }
   }
+
   createCard() async {
     final dbService = DBService();
     print("oncreatecard");
@@ -66,18 +70,42 @@ class HomePage extends StatelessWidget {
       // }
     }
   }
+
+  Future<bool> checkIfUserHasACard() async {
+    try {
+      // Fetch the list of business cards
+      businessCards = await dbService
+          .getAllBusinessCards();
+
+      // Check if the list is empty
+      return businessCards.isNotEmpty;
+    } catch (e) {
+      print("Error retrieving business cards: $e");
+      return false; // Return false if there was an error
+    }
+  }
+
+
   @override
-  Widget build(BuildContext context)  {
-    return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: user != null
-            ? [
+  Widget build(BuildContext context) {
+    return FutureBuilder<bool>(
+      future: checkIfUserHasACard(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+        return Text('Error: ${snapshot.error}');
+        } else if (snapshot.hasData && snapshot.data == true) {
+          return Scaffold(
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: user != null
+                  ? [
                 ElevatedButton(
                   onPressed: createCard,
                   child: Text("johndoe"),
                 ),
-                BusinessCard(),
+                BusinessCard(cardData: businessCards[0]),
                 Container(
                   height: 200,
                   width: 390,
@@ -98,15 +126,23 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
                 RecentContacts(),
-          ElevatedButton(onPressed: fetchUser, child: Text("get")),
+                ElevatedButton(onPressed: fetchUser, child: Text("get")),
               ]
-            : [
+                  : [
                 EmptyCard(),
               ],
-        
-      ),
+            ),
+          );
+        } else {
+          // If there's no data (card not found), return an alternative widget
+          return Column(
+            children: [
+              EmptyCard(),
+            ],
+          );
+        }
+      },
     );
   }
 }
-
 

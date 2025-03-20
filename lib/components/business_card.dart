@@ -1,10 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/models/card.dart';
 import 'package:flutter_application_1/services/db_service.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class BusinessCard extends StatelessWidget {
-  const BusinessCard({super.key});
+  final BusinessCardModel cardData; // Expecting a Card object here
+
+  BusinessCard({super.key, required this.cardData});
 
   @override
   Widget build(BuildContext context) {
@@ -38,12 +41,12 @@ class BusinessCard extends StatelessWidget {
                                   padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text('М. Төгс-Эрдэм'),
-                                      Text('График Дизайнер'),
-                                      Text('Freelancer'),
+                                      Text(cardData.firstName ?? 'Unknown'),
+                                      Text(cardData.occupation ?? 'Unknown'),
+                                      Text(cardData.company ?? 'Unknown'),
                                     ],
                                   ),
                                 ),
@@ -52,7 +55,7 @@ class BusinessCard extends StatelessWidget {
                                   right: 0,
                                   child: Row(
                                     children: [
-                                      Text('Fb '),
+                                      Text('Fb '), // Replace with social links data
                                       Text('IG '),
                                       Text('Ln '),
                                       Text('Yt'),
@@ -70,9 +73,9 @@ class BusinessCard extends StatelessWidget {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('М. Төгс-Эрдэм'),
-                              Text('График Дизайнер'),
-                              Text('Freelancer'),
+                              Text(cardData.email ?? 'No email'),
+                              Text(cardData.tels?.join(", ") ?? 'No phone'),
+                              // Add other contact details here if available
                             ],
                           ),
                         ],
@@ -81,7 +84,6 @@ class BusinessCard extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  //
                   bottom: 0,
                   right: 0,
                   child: SvgPicture.asset(
@@ -107,7 +109,7 @@ class BusinessCard extends StatelessWidget {
                   ),
                 ),
               ],
-            ), // Adjust the number (20) to your preference
+            ),
           ),
         ),
       ],
