@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/services/db_service.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class BusinessCard extends StatelessWidget {
@@ -21,19 +23,22 @@ class BusinessCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Container( //logo or avatar
+                          Container(
+                            //logo or avatar
                             margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
                             color: Colors.black26,
                             height: 80,
                             width: 80,
                           ),
-                          Expanded( //main info and social links
+                          Expanded(
+                            //main info and social links
                             child: Stack(
                               children: [
                                 Padding(
                                   padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text('М. Төгс-Эрдэм'),
@@ -59,7 +64,8 @@ class BusinessCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Row( //contact information
+                      Row(
+                        //contact information
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,7 +80,8 @@ class BusinessCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Positioned( //
+                Positioned(
+                  //
                   bottom: 0,
                   right: 0,
                   child: SvgPicture.asset(
@@ -109,28 +116,50 @@ class BusinessCard extends StatelessWidget {
 }
 
 class EmptyCard extends StatelessWidget {
-  const EmptyCard({super.key});
+  EmptyCard({super.key});
+
+  User? user = FirebaseAuth.instance.currentUser;
+
+  createCard() {
+    final dbService = DBService();
+    if(user != null){
+      // dbService.createBusinessCard({
+      //   "firstName": "John",
+      //   "lastName": "Doe",
+      //   "email": "john.doe@info.com",
+      //   "tel": "8888",
+      //   "company": 'John',
+      //   "occupation": 'slob',
+      //   "social links": ["a", "b", "c"],
+      //   "addresses": ["aaa"],
+      // });
+    }
+
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      elevation: 3,
-      child: InkWell(
-        onTap: (){},
-        borderRadius: BorderRadius.circular(20),
-        child: Container(
-          height: 200, // Adjust height as needed
-          width: double.infinity, // Takes full width
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: Colors.grey[500], // Light grey background
-          ),
-          child: Center(
-            child: CircleAvatar(
-              radius: 30,
-              backgroundColor: Colors.blueAccent, // Button color
-              child: Icon(Icons.add, size: 40, color: Colors.white),
+    return GestureDetector(
+      onTap: createCard,
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        elevation: 3,
+        child: InkWell(
+          onTap: () {},
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            height: 200, // Adjust height as needed
+            width: double.infinity, // Takes full width
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.grey[500], // Light grey background
+            ),
+            child: Center(
+              child: CircleAvatar(
+                radius: 30,
+                backgroundColor: Colors.blueAccent, // Button color
+                child: Icon(Icons.add, size: 40, color: Colors.white),
+              ),
             ),
           ),
         ),

@@ -3,20 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/business_card.dart';
 import 'package:flutter_application_1/pages/map_page.dart';
 import 'package:flutter_application_1/components/recent_contacts.dart';
-import 'package:flutter_application_1/services/user_service.dart';
+import 'package:flutter_application_1/services/db_service.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
   User? user = FirebaseAuth.instance.currentUser;
-  final userService = UserService();
+  final dbService = DBService();
   fetchUser () async {
     if(user != null ) {
       print(user);
-      userService.createUserDocument("Ариунаа", "Баярмагнай");
+      // await dbService.createUserDocument({
+      //   "firstName": "John",
+      //   "lastName": "Doe",
+      //   "email": "doe.john@info.com",
+      // });
+
+      // userService.createUserDocument("Ариунаа", "Баярмагнай");
 
     }
-    var userData = await userService.getUserData();
+    var userData = await dbService.getUserData();
     print(userData);
     if (userData != null) {
       print("User Name: $userData");
@@ -29,7 +35,37 @@ class HomePage extends StatelessWidget {
       print("User not found");
     }
   }
-
+  createCard() async {
+    final dbService = DBService();
+    print("oncreatecard");
+    if (user != null) {
+      // String? cardId = await dbService.createBusinessCard({
+      //   "firstName": "John",
+      //   "lastName": "Doe",
+      //   "email": "john.doe@info.com",
+      //   "tel": "8888",
+      //   "company": 'aaaa',
+      //   "occupation": 'slob',
+      //   "social links": "baaa",
+      //   "addresses": ["aaa"],
+      // });
+      // print(cardId);
+      //
+      //
+      // if (cardId != null) {
+      //   await dbService.updateBusinessCard(cardId, {
+      //     "firstName": "Ari",
+      //     "lastName": "Buya",
+      //     "email": "ari.doe@info.com",
+      //     "tel": "8888",
+      //     "company": "aaaa",
+      //     "occupation": "slob",
+      //     "social links": ["a", "b"],
+      //     "addresses": ["aaa"],
+      //   });
+      // }
+    }
+  }
   @override
   Widget build(BuildContext context)  {
     return Scaffold(
@@ -37,7 +73,10 @@ class HomePage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: user != null
             ? [
-                // If user is signed in, show these widgets
+                ElevatedButton(
+                  onPressed: createCard,
+                  child: Text("johndoe"),
+                ),
                 BusinessCard(),
                 Container(
                   height: 200,
@@ -69,3 +108,5 @@ class HomePage extends StatelessWidget {
     );
   }
 }
+
+
