@@ -7,7 +7,6 @@ class BusinessCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-
     return Column(
       children: [
         SizedBox(
@@ -105,6 +104,37 @@ class BusinessCard extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class EmptyCard extends StatelessWidget {
+  const EmptyCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      elevation: 3,
+      child: InkWell(
+        onTap: (){},
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          height: 200, // Adjust height as needed
+          width: double.infinity, // Takes full width
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: Colors.grey[500], // Light grey background
+          ),
+          child: Center(
+            child: CircleAvatar(
+              radius: 30,
+              backgroundColor: Colors.blueAccent, // Button color
+              child: Icon(Icons.add, size: 40, color: Colors.white),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -69,8 +69,8 @@ class RootPage extends StatefulWidget {
 class _RootPageState extends State<RootPage> {
   int currentPage = 0;
   final List<Widget> pages = [
-    const HomePage(),
-    const MapPage(),
+    HomePage(),
+    MapPage(),
     AddPage(),
     InsightPage(),
     SettingsPage(),
@@ -88,26 +88,6 @@ class _RootPageState extends State<RootPage> {
           currentPage = index;
         }),
       ),
-
-      // bottomNavigationBar: NavigationBar(
-      //   destinations: const [
-      //     NavigationDestination(
-      //       icon: Icon(Icons.home),
-      //       label: '',
-      //     ),
-      //     NavigationDestination(icon: Icon(Icons.location_on), label: ''),
-      //     NavigationDestination(
-      //         icon: Icon(Icons.add_circle_outline), label: ''),
-      //     NavigationDestination(icon: Icon(Icons.bar_chart), label: ''),
-      //     NavigationDestination(icon: Icon(Icons.settings), label: ''),
-      //   ],
-      //   onDestinationSelected: (int index) {
-      //     setState(() {
-      //       currentPage = index;
-      //     });
-      //   },
-      //   selectedIndex: currentPage,
-      // ),
     );
   }
 }
