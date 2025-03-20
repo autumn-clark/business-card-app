@@ -1,0 +1,2 @@
+D:/projects/thesis/flutter_app/business-card-app/android/app/.cxx/RelWithDebInfo/4w185z1l/x86_64/CMakeFiles/edit_cache.dir
+D:/projects/thesis/flutter_app/business-card-app/android/app/.cxx/RelWithDebInfo/4w185z1l/x86_64/CMakeFiles/rebuild_cache.dir

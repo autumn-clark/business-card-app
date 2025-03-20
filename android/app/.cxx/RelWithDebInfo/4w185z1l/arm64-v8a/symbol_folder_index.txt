@@ -1,0 +1,1 @@
+D:\projects\thesis\flutter_app\business-card-app\build\app\intermediates\cxx\RelWithDebInfo\4w185z1l\obj\arm64-v8a

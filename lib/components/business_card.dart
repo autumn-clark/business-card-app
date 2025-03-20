@@ -5,9 +5,9 @@ import 'package:flutter_application_1/services/db_service.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class BusinessCard extends StatelessWidget {
-  final BusinessCardModel cardData; // Expecting a Card object here
+  final BusinessCardModel cardData;
 
-  BusinessCard({super.key, required this.cardData});
+  const BusinessCard({Key? key, required this.cardData}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,14 +21,14 @@ class BusinessCard extends StatelessWidget {
             child: Stack(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(30.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: Column(
                     children: [
                       Row(
                         children: [
                           Container(
                             //logo or avatar
-                            margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
+                            margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
                             color: Colors.black26,
                             height: 80,
                             width: 80,
@@ -38,7 +38,7 @@ class BusinessCard extends StatelessWidget {
                             child: Stack(
                               children: [
                                 Padding(
-                                  padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                                  padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
                                   child: Column(
                                     crossAxisAlignment:
                                     CrossAxisAlignment.start,
@@ -93,16 +93,16 @@ class BusinessCard extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  bottom: 10,
-                  right: 10,
+                  bottom: 5,
+                  right: 5,
                   child: IconButton(
                     onPressed: () {},
                     icon: Icon(Icons.edit),
                   ),
                 ),
                 Positioned(
-                  bottom: 10,
-                  right: 50,
+                  bottom: 5,
+                  right: 25,
                   child: IconButton(
                     onPressed: () {},
                     icon: Icon(Icons.send),

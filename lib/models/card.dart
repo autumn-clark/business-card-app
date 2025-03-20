@@ -25,4 +25,9 @@ class BusinessCardModel {
     this.links,
     this.seen,
   });
+
+  @override
+  String toString() {
+    return 'BusinessCardModel{uid: $uid, email: $email, firstName: $firstName, lastName: $lastName, company: $company, occupation: $occupation, addresses: $addresses, tels: $tels, links: $links, seen: $seen}';
+  }
 }
