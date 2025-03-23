@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
       children: user != null
           ? [
         Column(
-          children: [
+          children: businessCardWidgets.isNotEmpty ? [
             CarouselSlider(
               items: [...businessCardWidgets, EmptyCard()],
               options: CarouselOptions(
@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             buildCarouselIndicator()
-          ],
+          ] : [EmptyCard()],
         ),
         Container(
           height: 200,
