@@ -1,6 +1,7 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/services/contact_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart'; // Import geolocator
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -10,63 +11,57 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-  late GoogleMapController mapController;
-  LatLng _currentLocation = const LatLng(47.92280592816315, 106.92075913913573);
-
-  // Function to check and get current location
-  Future<void> _getCurrentLocation() async {
-    // Check if location services are enabled
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      // Handle service not enabled
-      print('Location services are disabled');
-      return;
-    }
-
-    // Request permission to access location
-    LocationPermission permission = await Geolocator.requestPermission();
-
-    if (permission == LocationPermission.deniedForever) {
-      // Handle permanently denied permission
-      print("Location permission denied forever");
-      return;
-    }
-
-    // Get current position if permission is granted
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-
-    setState(() {
-      _currentLocation = LatLng(position.latitude, position.longitude);
-    });
-
-    mapController.animateCamera(
-      CameraUpdate.newLatLng(_currentLocation),
-    );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _getCurrentLocation(); // Fetch the current location when the page loads
-  }
+  late GoogleMapController _mapController;
+  final ContactService _contactService = ContactService();
+  final LatLng _fallbackLocation = const LatLng(0, 0);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: GoogleMap(
-        initialCameraPosition: CameraPosition(
-          target: _currentLocation,
-          zoom: 13,
-        ),
-        onMapCreated: (GoogleMapController controller) {
-          mapController = controller;
-        },
-        myLocationEnabled: true, // Enable the current location dot
-        myLocationButtonEnabled:
-            true, // Enable the button to center on current location
-      ),
+    return StreamBuilder<Set<Marker>>(
+      stream: _contactService.contactMarkers,
+      builder: (context, snapshot) {
+        final markers = snapshot.data ?? {};
+
+        if (markers.isNotEmpty && _mapController != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _mapController.animateCamera(
+              CameraUpdate.newLatLngBounds(
+                _boundsFromMarkers(markers),
+                50, // padding
+              ),
+            );
+          });
+        }
+
+        return GoogleMap(
+          onMapCreated: (controller) => _mapController = controller,
+          initialCameraPosition: CameraPosition(
+            target: _fallbackLocation,
+            zoom: 2,
+          ),
+          markers: markers,
+        );
+      },
     );
   }
+
+  LatLngBounds _boundsFromMarkers(Set<Marker> markers) {
+    double? minLat, maxLat, minLng, maxLng;
+
+    for (final marker in markers) {
+      final lat = marker.position.latitude;
+      final lng = marker.position.longitude;
+
+      minLat = minLat == null ? lat : math.min(lat, minLat);
+      maxLat = maxLat == null ? lat : math.max(lat, maxLat);
+      minLng = minLng == null ? lng : math.min(lng, minLng);
+      maxLng = maxLng == null ? lng : math.max(lng, maxLng);
+    }
+
+    return LatLngBounds(
+      northeast: LatLng(maxLat ?? 0, maxLng ?? 0),
+      southwest: LatLng(minLat ?? 0, minLng ?? 0),
+    );
+  }
+
 }

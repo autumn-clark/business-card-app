@@ -33,7 +33,7 @@ class DBService {
   }
 
   // To update a card
-  Future<void> updateBusinessCard(String cardId, BusinessCardModel updatedCard) async {
+  Future<void> updateBusinessCard(BusinessCardModel updatedCard) async {
     try {
       Map<String, dynamic> updatedData = {
         "email": updatedCard.email,
@@ -46,12 +46,22 @@ class DBService {
         "links": updatedCard.links,
         "seen": updatedCard.seen,
       };
-      await _db.collection("Card").doc(cardId).update(updatedData);
+      await _db.collection("Card").doc(updatedCard.uid).update(updatedData);
       print("Business card updated successfully!");
     } catch (e) {
       print("Error updating business card: $e");
     }
   }
+
+  Future<void> deleteBusinessCard(String cardId) async {
+    try {
+      await _db.collection("Card").doc(cardId).delete();
+      print("Business card deleted successfully!");
+    } catch (e) {
+      print("Error deleting business card: $e");
+    }
+  }
+
 
   // To get a card by its id
   Future<BusinessCardModel?> getBusinessCard(String cardId) async {
