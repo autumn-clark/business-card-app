@@ -11,9 +11,10 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-  late GoogleMapController _mapController;
+  GoogleMapController? _mapController;
   final ContactService _contactService = ContactService();
   final LatLng _fallbackLocation = const LatLng(0, 0);
+  Set<Marker> _previousMarkers = {};
 
   @override
   Widget build(BuildContext context) {
@@ -22,15 +23,21 @@ class _MapPageState extends State<MapPage> {
       builder: (context, snapshot) {
         final markers = snapshot.data ?? {};
 
-        if (markers.isNotEmpty && _mapController != null) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _mapController.animateCamera(
-              CameraUpdate.newLatLngBounds(
-                _boundsFromMarkers(markers),
-                50, // padding
-              ),
-            );
-          });
+        // Only update camera if markers have changed and we have a controller
+        if (_mapController != null &&
+            !_areMarkerSetsEqual(markers, _previousMarkers)) {
+          _previousMarkers = Set.from(markers);
+
+          if (markers.isNotEmpty) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _mapController!.animateCamera(
+                CameraUpdate.newLatLngBounds(
+                  _boundsFromMarkers(markers),
+                  50, // padding
+                ),
+              );
+            });
+          }
         }
 
         return GoogleMap(
@@ -45,7 +52,22 @@ class _MapPageState extends State<MapPage> {
     );
   }
 
+  bool _areMarkerSetsEqual(Set<Marker> a, Set<Marker> b) {
+    if (a.length != b.length) return false;
+    for (final marker in a) {
+      if (!b.any((m) => m.markerId == marker.markerId)) return false;
+    }
+    return true;
+  }
+
   LatLngBounds _boundsFromMarkers(Set<Marker> markers) {
+    if (markers.isEmpty) {
+      return LatLngBounds(
+        northeast: _fallbackLocation,
+        southwest: _fallbackLocation,
+      );
+    }
+
     double? minLat, maxLat, minLng, maxLng;
 
     for (final marker in markers) {
@@ -63,5 +85,4 @@ class _MapPageState extends State<MapPage> {
       southwest: LatLng(minLat ?? 0, minLng ?? 0),
     );
   }
-
 }

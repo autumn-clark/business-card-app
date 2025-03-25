@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_application_1/models/card.dart';
+import 'package:flutter_application_1/models/contact.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class DBService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -124,90 +126,48 @@ class DBService {
       return [];
     }
   }
-//---------------------User------------------//
-
-
-
-  Future<void> createUserDocument(Map<String, dynamic> userData) async {
-    User? user = _auth.currentUser;
-    if (user != null) {
-      userData["uid"] = user.uid;
-      userData["email"] = user.email;
-
-      await _db.collection("User").doc(user.uid).set(userData);
-    }
-  }
-
-
-  Future<Map<String, dynamic>?> getUserData() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      DocumentSnapshot doc = await FirebaseFirestore.instance.collection("User").doc(user.uid).get();
-      return doc.data() as Map<String, dynamic>?;
-    }
-    return null;
-  }
-
 //-----------------------Contacts-------------------------//
 
-//To create a contact
-  Future<String?> createContact(Map<String, dynamic> contactData) async {
-    User? user = _auth.currentUser;
-    if (user != null) {
-      contactData["userUid"] = user.uid;
-
-      // Create a new document and get its reference
-      DocumentReference docRef = await _db.collection("Contacts").add(contactData);
-
-      // Return the newly created document ID
-      return docRef.id;
-    }
-    return null; // Return null if user is not authenticated
+  Future<void> saveContact({
+    required String scannedCardUid,
+    required String contactUid,
+    required LatLng location,
+  }) async {
+    final user = _auth.currentUser;
+    if (user == null) throw Exception('User not authenticated');
+    print("before adding");
+    await _db.collection('contacts').add({
+      'userUid': user.uid,
+      'contactUid': contactUid,
+      'cardUid': scannedCardUid,
+      'location': GeoPoint(location.latitude, location.longitude),
+      'time': FieldValue.serverTimestamp(),
+    });
   }
 
+  Stream<List<Contact>> getContacts() {
+    final user = _auth.currentUser;
+    if (user == null) return Stream.value([]);
 
-//To delete a contact
-  Future<void> deleteContact(String contactId) async {
-    try {
-      await _db.collection("Contacts").doc(contactId).delete();
-    } catch (e) {
-      print("Error deleting contacts: $e");
-      throw e;
-    }
+    return _db.collection('contacts')
+        .where('userUid', isEqualTo: user.uid)
+        .orderBy('time', descending: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+        .map((doc) => Contact.fromFirestore(doc))
+        .toList());
   }
-//To get a contact by its id
-  Future<Map<String, dynamic>?> getContact(String contactId) async {
-    try {
-      DocumentSnapshot doc = await _db.collection("Contacts").doc(contactId).get();
-      if (doc.exists) {
-        return doc.data() as Map<String, dynamic>;
-      } else {
-        print("No contacts found with ID: $contactId");
-        return null;
-      }
-    } catch (e) {
-      print("Error retrieving contacts: $e");
-      return null;
-    }
-  }
-//To get all contact of a user
-  Future<List<Map<String, dynamic>>> getAllContacts() async {
-    User? user = _auth.currentUser;
+
+  Future<List<Contact>> getContactsByUser(String contactUid) async {
+    final user = _auth.currentUser;
     if (user == null) return [];
 
-    try {
-      QuerySnapshot snapshot = await _db
-          .collection("Contacts")
-          .where("userUid", isEqualTo: user.uid)
-          .get();
+    final snapshot = await _db.collection('contacts')
+        .where('userUid', isEqualTo: user.uid)
+        .where('contactUid', isEqualTo: contactUid)
+        .get();
 
-      return snapshot.docs
-          .map((doc) => doc.data() as Map<String, dynamic>)
-          .toList();
-    } catch (e) {
-      print("Error retrieving contacts: $e");
-      return [];
-    }
+    return snapshot.docs.map(Contact.fromFirestore).toList();
   }
-
 }
+

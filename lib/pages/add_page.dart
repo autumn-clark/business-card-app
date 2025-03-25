@@ -1,9 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/business_card.dart';
 import 'package:flutter_application_1/models/card.dart';
 import 'package:flutter_application_1/providers/business_card_provider.dart';
 import 'package:flutter_application_1/services/db_service.dart';
+import 'package:flutter_application_1/services/location_service.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:flutter_application_1/pages/qr_scanner_page.dart';
@@ -87,7 +91,65 @@ class _AddPageState extends State<AddPage> {
     );
   }
 
+  Future<void> handleScannedQR(String scannedData, String latlong) async {
+    if(latlong == ''){
+      await DBService().saveContact(
+        scannedCardUid: scannedData,
+        contactUid: FirebaseAuth.instance.currentUser!.uid,
+        location: LatLng(47.90928770042334, 106.90664904302045),
+      );
+    }
+    final parts = latlong.split('-');
+    if (parts.length != 2) {
+      throw FormatException('Invalid LatLng string format. Expected "latitude, longitude"');
+    }
+
+    final lat = double.tryParse(parts[0].trim());
+    final lng = double.tryParse(parts[1].trim());
+
+    if (lat == null || lng == null) {
+      throw FormatException('Invalid latitude or longitude values');
+    }
+    LatLng location = LatLng(lat, lng);
+    print("handle");
+    try {
+      // 1. Get the scanned card's data
+      final card = await DBService().getBusinessCard(scannedData);
+      if (card == null) throw Exception('Invalid QR code');
+
+      // 2. Save the contact (using the card's userUid as contactUid)
+      await DBService().saveContact(
+        scannedCardUid: scannedData,
+        contactUid: FirebaseAuth.instance.currentUser!.uid,
+        location: location,
+      );
+
+      // 3. Update the card's 'seen' history using copyWith
+      // final updatedCard = card.copyWith(
+      //   seen: [...card.seen, Timestamp.now()],
+      // );
+
+      // await DBService().updateBusinessCard(updatedCard);
+
+    } catch (e) {
+      print('Error saving contact: $e');
+      rethrow;
+    }
+  }
+
+  Future<String> getLocation() async {
+    Position? position = await LocationService.getCurrentLocation();
+    if (position != null) {
+      return '$position.latitute-$position.longitude';
+
+    } else {
+      print("Could not get location");
+      return '';
+    }
+  }
+
   void _showShareDialog(BuildContext context, String scannedCardId) async {
+    handleScannedQR(scannedCardId, await getLocation());
     final myCards = await DBService().getAllBusinessCards(); // Get Ari's cards
 
     List<bool> selectedCards = List.filled(myCards.length, false);
