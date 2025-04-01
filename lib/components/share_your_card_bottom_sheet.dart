@@ -29,13 +29,11 @@ class ShareCardBottomSheet extends StatelessWidget {
               ),
             ),
             SizedBox(height: 16.0),
-            // List of items as buttons
             ...items.map((item) {
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    // Handle item button press
                     print("Selected: $item");
                   },
                   style: ElevatedButton.styleFrom(
@@ -48,15 +46,14 @@ class ShareCardBottomSheet extends StatelessWidget {
                   child: Text(item),
                 ),
               );
-            }).toList(),
+            }),
             SizedBox(height: 16.0),
-            // No button
             ElevatedButton(
               onPressed: onNoPressed,
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50.0), // Full-width button
-                backgroundColor: Colors.grey[300], // Light gray background
-                foregroundColor: Colors.black, // Black text
+                minimumSize: Size(double.infinity, 50.0),
+                backgroundColor: Colors.grey[300],
+                foregroundColor: Colors.black,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class QRScannerPage extends StatefulWidget {
+  const QRScannerPage({super.key});
+
   @override
   _QRScannerPageState createState() => _QRScannerPageState();
 }
@@ -9,28 +11,24 @@ class QRScannerPage extends StatefulWidget {
 class _QRScannerPageState extends State<QRScannerPage> {
   String scannedUID = 'not scanned';
   final MobileScannerController controller = MobileScannerController();
-  bool _isPopping = false; // Flag to prevent multiple pops
+  bool _isPopping = false;
 
   @override
   void initState() {
     super.initState();
-    // Start the camera when the widget is initialized
     controller.start().catchError((error) {
-      // Handle camera start errors
       print("Failed to start camera: $error");
     });
   }
 
 
 
-  // Handle the QR scan and pass the UID back to the previous screen
   void handleQR(BarcodeCapture capture) {
     if (capture.barcodes.isNotEmpty && !_isPopping) {
       setState(() {
         scannedUID = capture.barcodes.first.rawValue ?? 'no value';
       });
 
-      // Prevent multiple pops
       _isPopping = true;
         controller.stop();
         controller.dispose();
@@ -47,22 +45,22 @@ class _QRScannerPageState extends State<QRScannerPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 250, // Set width
-              height: 250, // Set height
+              width: 250,
+              height: 250,
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.blue, width: 3), // Optional border
-                borderRadius: BorderRadius.circular(12), // Optional rounded corners
+                border: Border.all(color: Colors.blue, width: 3),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(12), // Match border radius
+                borderRadius: BorderRadius.circular(12),
                 child: MobileScanner(
-                  controller: controller, // Use the controller for camera control
-                  fit: BoxFit.cover, // Ensures the camera feed fits inside the box
-                  onDetect: handleQR, // Set callback to handle QR detection
+                  controller: controller,
+                  fit: BoxFit.cover,
+                  onDetect: handleQR,
                 ),
               ),
             ),
-            SizedBox(height: 20), // Add some spacing
+            SizedBox(height: 20),
             Text(
               'Scanned UID: $scannedUID',
               style: TextStyle(fontSize: 16),

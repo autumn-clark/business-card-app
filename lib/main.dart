@@ -13,7 +13,6 @@ void main() async {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => BusinessCardProvider()),
-      // other providers if any
     ],
     child: MyApp(),
   ),);
@@ -27,7 +26,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter App',
       home: ChangeNotifierProvider(
-        create: (context) => BusinessCardProvider()..loadCards(),  // Corrected syntax
+        create: (context) => BusinessCardProvider()..loadCards(),
         child: const RootPage(),
       ),
     );

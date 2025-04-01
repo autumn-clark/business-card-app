@@ -1,9 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/add_page.dart';
 import 'package:flutter_application_1/config/colors.dart';
 import 'package:flutter_application_1/pages/home_page.dart';
-import 'package:flutter_application_1/pages/insight_page.dart';
+import 'package:flutter_application_1/pages/contacts_page.dart';
 import 'package:flutter_application_1/pages/map_page.dart';
 import 'package:flutter_application_1/pages/settings_page.dart';
 
@@ -17,7 +16,7 @@ MaterialColor customSwatch = MaterialColor(
     200: Color(0xFFFFC27A),
     300: Color(0xFFFFB051),
     400: Color(0xFFFFA138),
-    500: Color(0xFFFFBB4D), // Main color
+    500: Color(0xFFFFBB4D),
     600: Color(0xFFFF9A1E),
     700: Color(0xFFFF8808),
     800: Color(0xFFFF7700),
@@ -39,17 +38,11 @@ class Home extends StatelessWidget {
           bodyLarge: TextStyle(color: AppColors.textPrimary, fontSize: 18),
           bodyMedium: TextStyle(color: Colors.black, fontSize: 16),
         ),
-
-        bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          type: BottomNavigationBarType.fixed,
-        ),
         appBarTheme: const AppBarTheme(
           iconTheme: IconThemeData(
             color: Color.fromRGBO(26, 30, 91, 1),
           ),
-          backgroundColor: Colors.transparent, // Custom app bar color
+          backgroundColor: Colors.transparent,
           elevation: 0,
           centerTitle: true,
           titleTextStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -73,14 +66,22 @@ class _RootPageState extends State<RootPage> {
     HomePage(),
     MapPage(),
     AddPage(),
-    InsightPage(),
+    ContactsPage(),
     SettingsPage(),
+  ];
+  final List title = [
+    "Сайн уу?",
+    "Газрын зураг",
+    "Хуваалцах уу?",
+    "Харилцагчид",
+    "Тохиргоо",
   ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home'),
+        centerTitle: true,
+        title: Text(title[currentPage]),
       ),
       body: pages[currentPage],
       bottomNavigationBar: CustomBottomNavigationBar(
@@ -98,14 +99,21 @@ class CustomBottomNavigationBar extends StatelessWidget {
   final Function(int) onPageChanged;
 
   const CustomBottomNavigationBar({
-    Key? key,
+    super.key,
     required this.currentPage,
     required this.onPageChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
+      backgroundColor: Colors.deepPurpleAccent,
+        elevation: 0,
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.blue[200],
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
       currentIndex: currentPage,
       onTap: onPageChanged,
       items: const [

@@ -7,7 +7,7 @@ class CardFormPage extends StatefulWidget {
   final BusinessCardModel? cardData;
   final dbService = DBService();
 
-  CardFormPage({this.cardData});
+  CardFormPage({super.key, this.cardData});
 
   @override
   _CardFormPageState createState() => _CardFormPageState();
@@ -25,7 +25,6 @@ class _CardFormPageState extends State<CardFormPage> {
   void initState() {
     super.initState();
 
-    // Initialize controllers with existing data if editing
     emailController = TextEditingController(
         text: widget.cardData != null ? widget.cardData!.email : '');
     firstNameController = TextEditingController(
@@ -62,31 +61,30 @@ class _CardFormPageState extends State<CardFormPage> {
           children: [
             TextField(
               controller: firstNameController,
-              decoration: InputDecoration(labelText: 'First Name'),
+              decoration: InputDecoration(labelText: 'Нэр'),
             ),
             TextField(
               controller: lastNameController,
-              decoration: InputDecoration(labelText: 'Last Name'),
+              decoration: InputDecoration(labelText: 'Овог'),
             ),
             TextField(
               controller: emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(labelText: 'Цахим шуудан'),
             ),
             TextField(
               controller: companyController,
-              decoration: InputDecoration(labelText: 'Company'),
+              decoration: InputDecoration(labelText: 'Байгууллага'),
             ),
             TextField(
               controller: occupationController,
-              decoration: InputDecoration(labelText: 'Occupation'),
+              decoration: InputDecoration(labelText: 'Албан тушаал'),
             ),
             TextField(
               controller: phoneController,
-              decoration: InputDecoration(labelText: 'Phone'),
+              decoration: InputDecoration(labelText: 'Утас'),
             ),
             ElevatedButton(
               onPressed: () async {
-                // Create or update the business card
                 BusinessCardModel newCard = BusinessCardModel(
                   uid: widget.cardData?.uid ?? FirebaseAuth.instance.currentUser?.uid,
                   email: emailController.text,
@@ -94,20 +92,19 @@ class _CardFormPageState extends State<CardFormPage> {
                   lastName: lastNameController.text,
                   company: companyController.text,
                   occupation: occupationController.text,
-                  tels: phoneController.text.split(", "), // Assuming `tels` is a List<String>
+                  tels: phoneController.text.split(", "),
+                  userUid: ''
                 );
 
                 if (widget.cardData != null) {
-                  // Update the existing card
                   await widget.dbService.updateBusinessCard(newCard);
                 } else {
-                  // Create a new card
                   await widget.dbService.createBusinessCard(newCard);
                 }
 
                 Navigator.pop(context, true);
               },
-              child: Text('Save'),
+              child: Text('Хадгалах'),
             ),
             if (widget.cardData != null)
               ElevatedButton(
@@ -115,8 +112,8 @@ class _CardFormPageState extends State<CardFormPage> {
                   await widget.dbService.deleteBusinessCard(widget.cardData!.uid!);
                   Navigator.pop(context, true);
                 },
-                child: Text('Delete'),
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                child: Text('Устгах'),
               ),
           ],
         ),

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BusinessCardModel {
+  final String? userUid;
   final String? uid;
   final String? email;
   final String? firstName;
@@ -12,7 +13,6 @@ class BusinessCardModel {
   final List<String>? links;
   final List<Timestamp>? seen;
 
-  // Constructor with optional parameters
   BusinessCardModel({
     this.uid,
     this.email,
@@ -24,6 +24,7 @@ class BusinessCardModel {
     this.tels,
     this.links,
     this.seen,
+    this.userUid,
   });
 
   @override

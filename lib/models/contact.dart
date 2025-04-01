@@ -2,15 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Contact {
-  final String userUid;     // Scanner's UID (Ari)
-  final String contactUid;  // Card owner's UID (Buya)
-  final String cardUid;     // The specific card scanned
+  final String userUid;
+  final String cardUid;
   final LatLng location;
   final Timestamp time;
 
   Contact({
     required this.userUid,
-    required this.contactUid,
     required this.cardUid,
     required this.location,
     required this.time,
@@ -22,7 +20,6 @@ class Contact {
 
     return Contact(
       userUid: data['userUid'],
-      contactUid: data['contactUid'],
       cardUid: data['cardUid'],
       location: LatLng(geoPoint.latitude, geoPoint.longitude),
       time: data['time'],
@@ -32,7 +29,6 @@ class Contact {
   Map<String, dynamic> toMap() {
     return {
       'userUid': userUid,
-      'contactUid': contactUid,
       'cardUid': cardUid,
       'location': GeoPoint(location.latitude, location.longitude),
       'time': FieldValue.serverTimestamp(),

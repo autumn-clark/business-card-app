@@ -4,6 +4,8 @@ import 'package:flutter_application_1/components/sign_in.dart';
 import 'package:flutter_application_1/home.dart';
 
 class SettingsPage extends StatefulWidget {
+  const SettingsPage({super.key});
+
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }
@@ -23,12 +25,11 @@ class _SettingsPageState extends State<SettingsPage> {
           trailing: trailing,
           onTap: () async {
             if (title == 'Гарах') {
-              await FirebaseAuth.instance.signOut(); // Sign out the user
-              // Navigate to the sign-in screen after logging out
+              await FirebaseAuth.instance.signOut();
               //         Navigator.pushAndRemoveUntil(
               //           context,
               //           MaterialPageRoute(builder: (context) => AuthWrapper()),
-              //               (route) => false,  // This will remove all the previous routes
+              //               (route) => false,
               //         );
             }
           }),
@@ -42,18 +43,16 @@ class _SettingsPageState extends State<SettingsPage> {
         padding: const EdgeInsets.all(12.0),
         child: ListView(
           children: [
-            // User Info Section
             FutureBuilder<User?>(
               future: FirebaseAuth.instance
                   .authStateChanges()
-                  .first, // Listen once to the auth state
+                  .first,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator(); // Show loading indicator while checking auth state
+                  return CircularProgressIndicator();
                 }
 
                 if (snapshot.hasData) {
-                  // If user is signed in, display the Sign Out button
                   return Card(
                     elevation: 2,
                     shape: RoundedRectangleBorder(
@@ -80,12 +79,11 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   );
                 } else {
-                  // If user is not signed in, show Sign In button or other UI
                   return ElevatedButton(
                     onPressed: () {Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (context) => SignIn()),
-                          (route) => false,  // This will remove all the previous routes
+                          (route) => false,
                         );
                       },
                     child: Text("Нэвтрэх"),
@@ -96,7 +94,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
             SizedBox(height: 16),
 
-            // Settings Options
             _buildSettingItem(
               Icons.notifications,
               'Мэдэгдэл',
@@ -129,27 +126,25 @@ class _SettingsPageState extends State<SettingsPage> {
             FutureBuilder<User?>(
               future: FirebaseAuth.instance
                   .authStateChanges()
-                  .first, // Listen once to the auth state
+                  .first,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator(); // Show loading indicator while checking auth state
+                  return CircularProgressIndicator();
                 }
 
                 if (snapshot.hasData) {
-                  // If user is signed in, display the Sign Out button
                   return ElevatedButton(
                     onPressed: () async {
                       await FirebaseAuth.instance.signOut();
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => Home()),
-                            (route) => false,  // This will remove all the previous routes
+                            (route) => false,
                       );
                     },
                     child: Text("Гарах"),
                   );
                 } else {
-                  // If user is not signed in, show Sign In button or other UI
                   return Container();
                 }
               },

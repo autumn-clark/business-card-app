@@ -9,15 +9,15 @@ class BusinessCard extends StatelessWidget {
   final VoidCallback onCardUpdated;
 
   const BusinessCard({
-    Key? key,
+    super.key,
     required this.cardData,
     required this.onCardUpdated,
-  }) : super(key: key);
+  });
 
   void _showQrModal(BuildContext context) {
     showDialog(
       context: context,
-      barrierColor: Colors.black87, // Darker overlay for better contrast
+      barrierColor: Colors.black87,
       builder: (context) => Dialog(
         backgroundColor: Colors.transparent,
         insetPadding: const EdgeInsets.all(20),
@@ -47,7 +47,7 @@ class BusinessCard extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    'Scan to Connect',
+                    'Доор QR-ийг уншуулна уу',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -287,7 +287,7 @@ class EmptyCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Add New Business Card',
+                  'Шинэ нэрийн хуудас үүсгэх',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: Colors.white,
                   ),

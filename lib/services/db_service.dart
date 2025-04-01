@@ -8,7 +8,6 @@ class DBService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   //---------------------Card-----------------//
-  // To create a card
   Future<String?> createBusinessCard(BusinessCardModel card) async {
     User? user = _auth.currentUser;
     if (user != null) {
@@ -25,16 +24,13 @@ class DBService {
         "seen": card.seen,
       };
 
-      // Create a new document and get its reference
       DocumentReference docRef = await _db.collection("Card").add(cardData);
 
-      // Return the newly created document ID
       return docRef.id;
     }
-    return null; // Return null if user is not authenticated
+    return null;
   }
 
-  // To update a card
   Future<void> updateBusinessCard(BusinessCardModel updatedCard) async {
     try {
       Map<String, dynamic> updatedData = {
@@ -64,14 +60,13 @@ class DBService {
     }
   }
 
-
-  // To get a card by its id
   Future<BusinessCardModel?> getBusinessCard(String cardId) async {
     try {
       DocumentSnapshot doc = await _db.collection("Card").doc(cardId).get();
       if (doc.exists) {
         var data = doc.data() as Map<String, dynamic>;
         return BusinessCardModel(
+          userUid: data['userUid'],
           uid: doc.id,
           email: data['email'],
           firstName: data['firstName'],
@@ -93,7 +88,6 @@ class DBService {
     }
   }
 
-  // To get all cards of a user
   Future<List<BusinessCardModel>> getAllBusinessCards() async {
     User? user = _auth.currentUser;
     if (user == null) return [];
@@ -104,10 +98,10 @@ class DBService {
           .where("userUid", isEqualTo: user.uid)
           .get();
 
-      return snapshot.docs
-          .map((doc) {
+      return snapshot.docs.map((doc) {
         var data = doc.data() as Map<String, dynamic>;
         return BusinessCardModel(
+          userUid: data['userUid'],
           uid: doc.id,
           email: data['email'],
           firstName: data['firstName'],
@@ -119,8 +113,7 @@ class DBService {
           links: List<String>.from(data['links'] ?? []),
           seen: List<Timestamp>.from(data['seen'] ?? []),
         );
-      })
-          .toList();
+      }).toList();
     } catch (e) {
       print("Error retrieving business cards: $e");
       return [];
@@ -130,44 +123,84 @@ class DBService {
 
   Future<void> saveContact({
     required String scannedCardUid,
-    required String contactUid,
     required LatLng location,
+    required String userUid,
   }) async {
-    final user = _auth.currentUser;
-    if (user == null) throw Exception('User not authenticated');
+    if (userUid == null) throw Exception('User not authenticated');
     print("before adding");
-    await _db.collection('contacts').add({
-      'userUid': user.uid,
-      'contactUid': contactUid,
+
+    final querySnapshot = await _db
+        .collection('contacts')
+        .where('userUid', isEqualTo: userUid)
+        .where('cardUid', isEqualTo: scannedCardUid)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      print("Contact already exists, skipping save.");
+      return;
+    }
+
+    final docRef = await _db.collection('contacts').add({
+      'userUid': userUid,
       'cardUid': scannedCardUid,
       'location': GeoPoint(location.latitude, location.longitude),
       'time': FieldValue.serverTimestamp(),
     });
+
+    print("Document ID (auto-generated contactUid): ${docRef.id}");
   }
 
-  Stream<List<Contact>> getContacts() {
-    final user = _auth.currentUser;
-    if (user == null) return Stream.value([]);
+  // Stream<List<Contact>> getContacts() {
+  //   final user = _auth.currentUser;
+  //   if (user == null) return Stream.value([]);
+  //
+  //   return _db.collection('contacts')
+  //       .where('userUid', isEqualTo: user.uid)
+  //       .orderBy('time', descending: true)
+  //       .snapshots()
+  //       .map((snapshot) => snapshot.docs
+  //       .map((doc) => Contact.fromFirestore(doc))
+  //       .toList());
+  // }
 
-    return _db.collection('contacts')
-        .where('userUid', isEqualTo: user.uid)
-        .orderBy('time', descending: true)
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-        .map((doc) => Contact.fromFirestore(doc))
-        .toList());
+  Future<List<BusinessCardModel>> getCardsFromContacts() async {
+    List<Contact> contacts = await getContactsByUser();
+    try {
+      List<BusinessCardModel> ContactsCards = [];
+
+      for (var contact in contacts) {
+        final card = await getBusinessCard(contact.cardUid);
+        if (card != null) {
+          ContactsCards.add(card);
+        }
+      }
+
+      return ContactsCards;
+    } catch (e) {
+      var error = e.toString();
+      print('Error loading cards: $error');
+      return [];
+    }
   }
 
-  Future<List<Contact>> getContactsByUser(String contactUid) async {
+  Future<List<Contact>> getContactsByUser() async {
     final user = _auth.currentUser;
     if (user == null) return [];
 
-    final snapshot = await _db.collection('contacts')
+    final snapshot = await _db
+        .collection('contacts')
         .where('userUid', isEqualTo: user.uid)
-        .where('contactUid', isEqualTo: contactUid)
         .get();
 
     return snapshot.docs.map(Contact.fromFirestore).toList();
   }
-}
 
+  Future<void> shareCard(String cardToShare, String cardId) async {
+    BusinessCardModel? senderCard = await getBusinessCard(cardId);
+    String? contactingUserId = senderCard?.userUid;
+    saveContact(
+        scannedCardUid: cardToShare,
+        location: LatLng(47.90928770042334, 106.90664904302045),
+        userUid: contactingUserId ?? '');
+  }
+}

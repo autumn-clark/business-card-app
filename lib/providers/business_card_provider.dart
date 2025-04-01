@@ -21,7 +21,7 @@ class BusinessCardProvider extends ChangeNotifier {
       _error = null;
     } catch (e) {
       _error = e.toString();
-      debugPrint('Error loading cards: $_error');
+      debugPrint('Алдаа гарлаа: $_error');
     } finally {
       _isLoading = false;
       notifyListeners();

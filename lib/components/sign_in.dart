@@ -1,10 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_application_1/home.dart';
 import 'package:flutter_application_1/services/auth.dart'; // Import your auth methods
 
 class SignIn extends StatefulWidget {
+  const SignIn({super.key});
+
   @override
   _SignInState createState() => _SignInState();
 }
@@ -46,20 +46,18 @@ class _SignInState extends State<SignIn> {
                     _emailController.text,
                     _passwordController.text,
                   );
-                  // Navigate to Home after successful sign-in
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => Home()),
                         (route) => false,
                   );
-                } catch (e) {}
-                //   print("Sign-in error: $e");
-                //   // Show error message if needed
-                //   ScaffoldMessenger.of(context).showSnackBar(
-                //     SnackBar(
-                //         content: Text("Failed to sign in. Check credentials.")),
-                //   );
-                // }
+                } catch (e) {
+                   print("Sign-in error: $e");
+                   ScaffoldMessenger.of(context).showSnackBar(
+                     SnackBar(
+                         content: Text("Нэвтрэхэд алдаа гарлаа")),
+                   );
+                 }
               },
               child: Text("Нэвтрэх"),
             ),
@@ -68,7 +66,7 @@ class _SignInState extends State<SignIn> {
                 padding: const EdgeInsets.only(top: 10),
                 child: TextButton(
                   onPressed: (){},
-                  child: Text("Register instead"),
+                  child: Text("Бүртгүүлэх үү?"),
                 ),
               ),
           ],
